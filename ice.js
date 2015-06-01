@@ -70,6 +70,39 @@ function getDateTime() {
   return dateTime;
 };
 
+function getFileTime() {
+    var now     = new Date(); 
+    var hour    = now.getHours();
+    var minute  = now.getMinutes();
+    var second  = now.getSeconds();   
+    if(hour.toString().length == 1) {
+        var hour = '0'+hour;
+    }
+    if(minute.toString().length == 1) {
+        var minute = '0'+minute;
+    }
+    if(second.toString().length == 1) {
+        var second = '0'+second;
+    }   
+    var dateTime = hour+'-'+minute+'-'+second;   
+    return dateTime;
+};
+
+function getFolderDate() {
+    var now     = new Date(); 
+    var year    = now.getFullYear();
+    var month   = now.getMonth()+1; 
+    var day     = now.getDate();
+    if(month.toString().length == 1) {
+        var month = '0'+month;
+    }
+    if(day.toString().length == 1) {
+        var day = '0'+day;
+    }   
+    var dateTime = year+'-'+month+'-'+day;   
+    return dateTime;
+};
+
 function setminmax(min, max) {
   var minAvailable = page.evaluate(function () { return document.querySelectorAll('.level_notch.selected')[0]});
   var maxAvailable = page.evaluate(function () { return document.querySelectorAll('.level_notch.selected')[1]});
@@ -112,7 +145,7 @@ function setminmax(min, max) {
 
 function s() {
   announce(getDateTime() + ': screen saved', 2);
-  page.render(folder + 'ice-' + getDateTime() + '.png');
+  page.render(folder + '/' + getFolderDate() + '/' + 'ingr_' + getFileTime() + '.png');
 };
 
 function quit(err) {
