@@ -269,24 +269,24 @@ function prepare() {
   page.clipRect = elementBounds;
 }
 
-function timestamp() {  
+function addtimestamp() {  
   page.evaluate(function () {
-    var timestamp = document.createElement('div');
+    timestamp = document.createElement('div');
     timestamp.id = 'timehud';
     timestamp.className = 'timehud';
 
-    var currentTime = new Date()
-    var hours = ("0" + currentTime.getHours()).slice(-2)
-    var minutes = ("0" + currentTime.getMinutes()).slice(-2)
-    var seconds = currentTime.getSeconds()
+    currentTime = new Date()
+    hours = ("0" + currentTime.getHours()).slice(-2)
+    minutes = ("0" + currentTime.getMinutes()).slice(-2)
+    seconds = currentTime.getSeconds()
 
-    var time = hours + ":" + minutes + ":" + seconds
+    time = hours + ":" + minutes + ":" + seconds
 
-    var day = ("0" + currentTime.getDate()).slice(-2)
-    var month = ("0" + (currentTime.getMonth() + 1)).slice(-2)
-    var year = currentTime.getFullYear()
+    day = ("0" + currentTime.getDate()).slice(-2)
+    month = ("0" + (currentTime.getMonth() + 1)).slice(-2)
+    year = currentTime.getFullYear()
 
-    var date = month + "-" + day + "-" + year
+    date = month + "-" + day + "-" + year
 
     timestamp.innerHTML =  date + ' ' + time;    
     timestamp.style.position = "absolute";
@@ -329,8 +329,8 @@ page.open('https://www.ingress.com/intel', function (status) {
       document.querySelector("#filters_container").style.display= 'none';
           });
         }
-        timestamp();
         window.setTimeout(function () {
+          addtimestamp();
           prepare();
           count();
           s();
