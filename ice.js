@@ -116,7 +116,7 @@ function setminmax(min, max) {
     //page.render('debug0.png');
     window.setTimeout(function() { 
       var rect1 = page.evaluate(function(min) {
-	return document.querySelector('#level_low' + min).getBoundingClientRect();
+  return document.querySelector('#level_low' + min).getBoundingClientRect();
       }, min);
       page.sendEvent('click', rect1.left + rect1.width / 2, rect1.top + rect1.height / 2);
       //page.render('debug1.png');
@@ -128,18 +128,18 @@ function setminmax(min, max) {
   if (max<8) {
     window.setTimeout(function() {
       var rect2 = page.evaluate(function() {
-	return document.querySelectorAll('.level_notch.selected')[1].getBoundingClientRect();
+  return document.querySelectorAll('.level_notch.selected')[1].getBoundingClientRect();
       });
       page.sendEvent('click', rect2.left + rect2.width / 2, rect2.top + rect2.height / 2);
       //page.render('debug2.png');
       window.setTimeout(function() { 
-	var rect3 = page.evaluate(function(min) {
-	  return document.querySelector('#level_high' + min).getBoundingClientRect();
-	}, max);
-	page.sendEvent('click', rect3.left + rect3.width / 2, rect3.top + rect3.height / 2);
-	//page.render('debug3.png');
-	page.evaluate(function () {document.querySelector('#filters_container').style.display = 'none'});
-	//page.render('debug4.png');
+  var rect3 = page.evaluate(function(min) {
+    return document.querySelector('#level_high' + min).getBoundingClientRect();
+  }, max);
+  page.sendEvent('click', rect3.left + rect3.width / 2, rect3.top + rect3.height / 2);
+  //page.render('debug3.png');
+  page.evaluate(function () {document.querySelector('#filters_container').style.display = 'none'});
+  //page.render('debug4.png');
       }, v/30)}, v/20)};
 };
 
@@ -207,8 +207,8 @@ function checkLogin() {
     if (page.url.substring(0,40) == 'https://appengine.google.com/_ah/loginfo') {
       announce('Accepting appEngine request...', 4);
       page.evaluate(function () {
-	document.getElementById('persist_checkbox').checked = true;
-	document.getElementsByTagName('form').submit();
+  document.getElementById('persist_checkbox').checked = true;
+  document.getElementsByTagName('form').submit();
       });
     };
     
@@ -219,10 +219,10 @@ function checkLogin() {
     
     if (twostep) {
       page.evaluate(function (code) {
-	document.getElementById('smsUserPin').value = code;
+  document.getElementById('smsUserPin').value = code;
       }, twostep);
       page.evaluate(function () {
-	document.getElementById('gaia_secondfactorform').submit();
+  document.getElementById('gaia_secondfactorform').submit();
       });
     };
 }
@@ -269,6 +269,35 @@ function prepare() {
   page.clipRect = elementBounds;
 }
 
+function timestamp() {  
+  page.evaluate(function () {
+    var timestamp = document.createElement('div');
+    timestamp.id = 'timehud';
+    timestamp.className = 'timehud';
+
+    var currentTime = new Date()
+    var hours = ("0" + currentTime.getHours()).slice(-2)
+    var minutes = ("0" + currentTime.getMinutes()).slice(-2)
+    var seconds = currentTime.getSeconds()
+
+    var time = hours + ":" + minutes + ":" + seconds
+
+    var day = ("0" + currentTime.getDate()).slice(-2)
+    var month = ("0" + (currentTime.getMonth() + 1)).slice(-2)
+    var year = currentTime.getFullYear()
+
+    var date = month + "-" + day + "-" + year
+
+    timestamp.innerHTML =  date + ' ' + time;    
+    timestamp.style.position = "absolute";
+    timestamp.style.bottom = "100px";
+    timestamp.style.right = "100px";
+    timestamp.style.color = "yellow";
+    document.getElementsByTagName('body')[0].appendChild(timestamp);
+
+  });
+}
+
 //MAIN SCRIPT
 
 checkSettings(l, p, minlevel, maxlevel, area);
@@ -277,40 +306,40 @@ greet();
 page.open('https://www.ingress.com/intel', function (status) {
   
   if (status !== 'success') {quit('cannot connect to remote server')};
-	  
-	  var link = page.evaluate(function () {
-	    return document.getElementsByTagName('a')[0].href; 
-	  });
-	  
-	  announce('Logging in...', 2);
-	  page.open(link, function () {
-	    
-	    login(l, p);
-	    
-	    window.setTimeout(function () {
-	      checkLogin();
-	      window.setTimeout(function () {
-		page.open(area, function () {
-		  setInterval(function () {
-		    hideDebris();
-		    if ((minlevel>1)|(maxlevel<8)){
-		      setminmax(minlevel,maxlevel);
-		    } else {
-		      page.evaluate(function () {
-			document.querySelector("#filters_container").style.display= 'none';
-		      });
-		    }
-		    
-		    window.setTimeout(function () {
-		      prepare();
-		      count();
-		      s();
-		      page.reload();
-		    }, v);
-		  }, v);
-		});
-	      }, loginTimeout);
-	    }, loginTimeout);
-	    
-	  });
+    
+    var link = page.evaluate(function () {
+      return document.getElementsByTagName('a')[0].href; 
+    });
+    
+    announce('Logging in...', 2);
+    page.open(link, function () {
+      
+      login(l, p);
+      
+      window.setTimeout(function () {
+        checkLogin();
+        window.setTimeout(function () {
+    page.open(area, function () {
+      setInterval(function () {
+        hideDebris();
+        if ((minlevel>1)|(maxlevel<8)){
+          setminmax(minlevel,maxlevel);
+        } else {
+          page.evaluate(function () {
+      document.querySelector("#filters_container").style.display= 'none';
+          });
+        }
+        timestamp();
+        window.setTimeout(function () {
+          prepare();
+          count();
+          s();
+          page.reload();
+        }, v);
+      }, v);
+    });
+        }, loginTimeout);
+      }, loginTimeout);
+      
+    });
 });
